@@ -1,0 +1,20 @@
+[
+  {
+    "url": "https://example.com/",
+    "host": "example.com",
+    "score": 30,
+    "crawledAt": "2026-10-19T02:36:46.910Z"
+  },
+  {
+    "url": "https://www.ubiquitousai.dev/",
+    "host": "www.ubiquitousai.dev",
+    "score": 30,
+    "crawledAt": "2026-10-25T00:00:58.413Z"
+  },
+  {
+    "url": "https://www.ubiquitousai.dev/",
+    "host": "www.ubiquitousai.dev",
+    "score": 42,
+    "crawledAt": "2026-10-25T00:02:48.346Z"
+  }
+]
