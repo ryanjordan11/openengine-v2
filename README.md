@@ -9,7 +9,7 @@ A free AEO (Answer Engine Optimization) scanner built with Next.js. Score how vi
 - Broken-link checker
 - Social previews (Google, Facebook/LinkedIn, X/Twitter)
 - Competitor side-by-side comparison
-- Score history per host
+- Browser-only score history per host
 - Downloadable Markdown report
 
 ## Getting Started
@@ -35,3 +35,5 @@ Open [http://localhost:3000](http://localhost:3000).
 - Tailwind CSS 4
 - TypeScript
 - node-html-parser
+
+Score history is stored in the browser's localStorage. No server filesystem or database is required.

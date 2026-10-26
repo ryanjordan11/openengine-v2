@@ -1,6 +1,5 @@
 import { NextRequest } from "next/server";
 import { scanSite } from "@/lib/scanner";
-import { addEntry } from "@/lib/history";
 
 export async function GET(request: NextRequest) {
   const url = request.nextUrl.searchParams.get("url");
@@ -15,8 +14,6 @@ export async function GET(request: NextRequest) {
 
   try {
     const result = await scanSite(url, crawl);
-    const host = new URL(result.url).host;
-    addEntry({ url: result.url, host, score: result.score, crawledAt: result.crawledAt });
     return Response.json(result);
   } catch (err) {
     const message = err instanceof Error ? err.message : "Scan failed";

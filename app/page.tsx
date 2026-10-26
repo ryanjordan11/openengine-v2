@@ -50,6 +50,30 @@ interface HistoryEntry {
   crawledAt: string;
 }
 
+const HISTORY_KEY = "openengine:score-history";
+
+function readBrowserHistory(host: string): HistoryEntry[] {
+  try {
+    const entries = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]") as HistoryEntry[];
+    return entries
+      .filter((entry) => entry.host === host)
+      .sort((a, b) => new Date(a.crawledAt).getTime() - new Date(b.crawledAt).getTime());
+  } catch {
+    return [];
+  }
+}
+
+function saveBrowserHistory(result: ScanResult) {
+  try {
+    const host = new URL(result.url).host;
+    const current = JSON.parse(localStorage.getItem(HISTORY_KEY) || "[]") as HistoryEntry[];
+    current.push({ url: result.url, host, score: result.score, crawledAt: result.crawledAt });
+    localStorage.setItem(HISTORY_KEY, JSON.stringify(current.slice(-500)));
+  } catch {
+    return;
+  }
+}
+
 const CATEGORY_ORDER = [
   "Security",
   "Meta Tags",
@@ -279,14 +303,7 @@ function TwitterPreview({ result }: { result: ScanResult }) {
 }
 
 function HistoryChart({ host, currentScore }: { host: string; currentScore: number }) {
-  const [entries, setEntries] = useState<HistoryEntry[]>([]);
-
-  useEffect(() => {
-    fetch(`/api/history?host=${encodeURIComponent(host)}`)
-      .then((r) => r.json())
-      .then((d) => setEntries(d.entries || []))
-      .catch(() => {});
-  }, [host]);
+  const [entries] = useState<HistoryEntry[]>(() => readBrowserHistory(host));
 
   if (entries.length < 2) return null;
 
@@ -489,6 +506,7 @@ export default function Home() {
         return;
       }
       setResult(data);
+      saveBrowserHistory(data);
       setLoading(false);
       setPagesScanned(data.pages.length);
       data.checks.forEach((_c: CheckResult, i: number) => {
@@ -713,7 +731,7 @@ export default function Home() {
               )}
 
               <div className="mb-10">
-                <HistoryChart host={new URL(result.url).host} currentScore={result.score} />
+                <HistoryChart key={new URL(result.url).host} host={new URL(result.url).host} currentScore={result.score} />
               </div>
 
               <div className="space-y-8">
